@@ -1,0 +1,342 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;font-size:12px;padding:10px;background:#fff;color:#111}
+.panel{background:#e8f0f8;border:1px solid #b0c4de;border-radius:4px;padding:10px 12px;margin-bottom:8px}
+.panel-title{font-size:11px;font-weight:bold;color:#1F3864;margin-bottom:6px}
+.row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+textarea{flex:1;min-width:200px;height:64px;font-size:10px;font-family:monospace;border:1px solid #9ab;border-radius:3px;padding:5px;resize:none;background:#fff}
+.btn{border:none;border-radius:3px;padding:6px 12px;font-size:11px;font-weight:bold;cursor:pointer;white-space:nowrap}
+.btn-add{background:#1F3864;color:#fff}.btn-add:hover{background:#162b4d}
+.btn-mgr{background:#fff;color:#1F3864;border:1px solid #1F3864;font-size:10px;padding:4px 10px}.btn-mgr:hover{background:#e8f0f8}
+.btn-clr{background:#fff;color:#800;border:1px solid #c00;font-size:10px;padding:4px 8px}.btn-clr:hover{background:#fff0f0}
+.sbar{font-size:10px;margin-top:5px;padding:3px 6px;border-radius:3px;display:none}
+.ok{background:#e6f4ea;color:#2e7d32;display:block}
+.err{background:#fce8e6;color:#c00;display:block}
+.hint{font-size:9.5px;color:#555;margin-top:5px;line-height:1.5}.hint b{color:#1F3864}
+.hinfo{font-size:9.5px;color:#1F3864;background:#dde8f5;border-radius:3px;padding:3px 8px;display:inline-block;margin-bottom:8px}
+.mgr-panel{background:#f8f9fa;border:1px solid #c8d4e0;border-radius:4px;padding:10px 12px;margin-bottom:8px;display:none}
+.mgr-title{font-size:11px;font-weight:bold;color:#1F3864;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.mgr-filter{display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.mgr-filter label{font-size:10px;color:#555}
+.mgr-filter select{font-size:10px;padding:3px 6px;border:1px solid #b0c4de;border-radius:3px;background:#fff}
+.mgr-wrap{max-height:220px;overflow-y:auto;border:1px solid #c8d4e0;border-radius:3px}
+table.ht{width:100%;border-collapse:collapse;font-size:10px}
+.ht thead th{background:#1F3864;color:#fff;padding:4px 7px;text-align:left;font-size:9px;font-weight:bold;border:1px solid #4a6a9a;position:sticky;top:0}
+.ht thead th.r{text-align:right}
+.ht tbody tr:nth-child(odd){background:#fff}.ht tbody tr:nth-child(even){background:#f2f5f9}
+.ht tbody tr:hover{background:#fff0e8}
+.ht tbody td{padding:3px 7px;border:0.5px solid #d0d8e0;vertical-align:middle}
+.ht tbody td.r{text-align:right;font-family:monospace}.ht tbody td.c{text-align:center}
+.btn-del{background:none;border:none;color:#C00000;font-size:13px;cursor:pointer;padding:0 3px;line-height:1}.btn-del:hover{color:#800}
+.mgr-note{font-size:9px;color:#666;margin-top:6px;font-style:italic}
+.tbl-wrap{overflow-x:auto}
+table.mt{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:9pt;table-layout:fixed}
+.mt .tr-title td{background:#1F3864;color:#fff;font-weight:bold;font-size:10pt;padding:6px 8px;text-align:center;border:1px solid #1F3864}
+.mt .tr-head th{background:#1F3864;color:#fff;font-weight:bold;font-size:8.5pt;padding:5px 6px;text-align:center;border:1px solid #4a6a9a;line-height:1.35;vertical-align:bottom;word-wrap:break-word}
+.mt .tr-head th.l{text-align:left}
+.mt .tr-data td{padding:3px 6px;border:1px solid #bfc9d4;text-align:right;vertical-align:middle;font-size:9pt;font-family:Arial,sans-serif}
+.mt .tr-data td.l{text-align:left}
+.mt .tr-data td.dc{text-align:center;vertical-align:middle;padding:3px 2px}
+.mt .tr-data td.dt{text-align:left;vertical-align:middle;font-weight:700;padding:3px 5px 3px 2px}
+.mt .r0{background:#ffffff}.mt .r1{background:#f0f4f9}
+.mt .tr-foot td{font-family:'Cambria Math',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:5px 8px;border:1px solid #bfc9d4;line-height:1.4}
+.up{color:#375623}.dn{color:#C00000}.zr{color:#555}
+.copy-row{margin-top:8px;display:flex;gap:10px;align-items:center}
+.btn-copy{background:#1F3864;color:#fff;border:none;border-radius:3px;padding:6px 14px;font-size:11px;font-weight:bold;cursor:pointer}
+.btn-copy:hover{background:#162b4d}.btn-copy.cok{background:#2e7d32}
+.cnote{font-size:9.5px;color:#555}
+</style>
+
+<div class="panel">
+  <div class="panel-title">Agregar datos del día</div>
+  <div class="row">
+    <textarea id="ta" placeholder="En Excel: seleccionar filas del día → Ctrl+C → clic aquí → Ctrl+V&#10;Primera vez: pegar el archivo completo para cargar todo el historial."></textarea>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button class="btn btn-add" onclick="addData()">Agregar</button>
+      <button class="btn btn-mgr" onclick="toggleMgr()">Ver historial</button>
+      <button class="btn btn-clr" onclick="clearAll()">Borrar todo</button>
+    </div>
+  </div>
+  <div id="sbar" class="sbar"></div>
+  <div class="hint">Para <b>corregir</b>: pegar la fila corregida, se sobreescribe. Para <b>borrar</b> una fila: "Ver historial".</div>
+</div>
+
+<div class="mgr-panel" id="mgr">
+  <div class="mgr-title"><span>Historial de registros</span><button class="btn btn-mgr" onclick="toggleMgr()" style="font-size:9px;padding:2px 8px">Cerrar</button></div>
+  <div class="mgr-filter">
+    <label>Filtrar:</label>
+    <select id="mgr-filter" onchange="renderMgr()">
+      <option value="">Todos</option>
+      <option value="guaj">Guajoyo</option><option value="cgra">Cerrón Grande</option>
+      <option value="5nov">5 de Noviembre</option><option value="3feb">3 de Febrero</option>
+      <option value="15se">15 de Septiembre</option>
+    </select>
+    <span id="mgr-count" style="font-size:9.5px;color:#555"></span>
+  </div>
+  <div class="mgr-wrap"><table class="ht">
+    <thead><tr><th>Fecha</th><th>Embalse</th><th class="r">Nivel ini</th><th class="r">Nivel fin</th><th class="c">Borrar</th></tr></thead>
+    <tbody id="mgr-body"></tbody>
+  </table></div>
+  <div class="mgr-note">Para corregir, pegar la fila corregida arriba — se sobreescribirá sin necesidad de borrar.</div>
+</div>
+
+<div id="hinfo" class="hinfo" style="display:none"></div>
+<div class="tbl-wrap"><table id="tbl" class="mt"></table></div>
+<div class="copy-row" id="crow" style="display:none">
+  <button class="btn-copy" id="bcopy" onclick="copyW()">Copiar tabla para Word</button>
+  <span class="cnote">Pegar en Word con Ctrl+V · anchos de columna controlados</span>
+</div>
+
+<script>
+const EORD=['guaj','cgra','5nov','3feb','15se'];
+const ENAME={guaj:'Guajoyo',cgra:'Cerrón Grande','5nov':'5 de Noviembre','3feb':'3 de Febrero','15se':'15 de Septiembre'};
+const CMIN={guaj:419.5,cgra:228.5,'5nov':176.0,'3feb':197.0,'15se':46.0};
+const CMAX={guaj:430.3,cgra:243.0,'5nov':180.0,'3feb':212.0,'15se':49.0};
+const CCV={
+  guaj:[[419.5,440.83],[420,458.21],[423.4,582.48],[424.97,644.74],[430.3,889.70]],
+  cgra:[[228.5,715.83],[232,939.63],[238,1466.55],[242,1917.55],[243,2042.20]],
+  '5nov':[[176,65.053],[177,73.320],[178,83.065],[179,94.464],[180,107.691]],
+  '3feb':[[197,97.12],[198,102.68],[199,108.46],[200,114.44],[201,120.64],[202,127.09],[203,133.76],[204,140.68],[205,147.86],[206,155.29],[207,162.97],[208,170.89],[209,179.07],[210,187.52],[211,196.24],[212,205.27]],
+  '15se':[[46,219.236],[46.5,232.269],[47,245.919],[48,275.122],[49,306.952]]
+};
+const SK='emb_hist_v1';
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const ST={r:{c:'#C00000',t:'Bajo'},g:{c:'#538135',t:'Normal'},b:{c:'#2E75B6',t:'Alto'}};
+
+function interp(x,cv){
+  if(x<=cv[0][0])return cv[0][1];if(x>=cv[cv.length-1][0])return cv[cv.length-1][1];
+  for(let i=0;i<cv.length-1;i++){if(x>=cv[i][0]&&x<=cv[i+1][0]){const t=(x-cv[i][0])/(cv[i+1][0]-cv[i][0]);return cv[i][1]+t*(cv[i+1][1]-cv[i][1]);}}
+}
+function pctVol(e,n){const cv=CCV[e];return(interp(n,cv)-interp(CMIN[e],cv))/(interp(CMAX[e],cv)-interp(CMIN[e],cv))*100;}
+function getSt(p){return p<30?'r':p<60?'g':'b';}
+function normEmb(s){
+  s=String(s).toLowerCase().replace(/[-_\s]/g,'').trim();
+  if(s.includes('guaj'))return'guaj';if(s.includes('cgra'))return'cgra';
+  if(s.includes('5nov')||s.includes('noviembre')||s.includes('20261105'))return'5nov';
+  if(s.includes('3feb')||s.includes('febrero')||s.includes('20260203'))return'3feb';
+  if(s.includes('15se')||s.includes('septiembre'))return'15se';return null;
+}
+function parseDate(s){
+  s=String(s).trim().replace(/\s+\d{1,2}:\d{2}(:\d{2})?(\s*(AM|PM))?$/i,'').trim();
+  let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);if(!isNaN(d))return d;}
+  m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);if(!isNaN(d))return d;}
+  const d=new Date(s);if(!isNaN(d)&&d.getFullYear()>2000)return d;return null;
+}
+function dkey(d){const dt=d instanceof Date?d:new Date(d);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function dkFmt(dk){const p=dk.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function dplus(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function fmtLong(d){return d.getDate()+' de '+MESES[d.getMonth()]+'-'+d.getFullYear();}
+function loadH(){try{const r=localStorage.getItem(SK);return r?JSON.parse(r):{};}catch(e){return{};}}
+function saveH(h){try{localStorage.setItem(SK,JSON.stringify(h));}catch(e){}}
+
+function parseLines(text){
+  const out=[];
+  for(const line of text.trim().split('\n').filter(l=>l.trim())){
+    const cols=line.split('\t').map(c=>c.trim());
+    if(cols.length<4)continue;
+    const d=parseDate(cols[0]);if(!d)continue;
+    let ei=-1;
+    for(let ci=1;ci<Math.min(cols.length,5);ci++){if(normEmb(cols[ci])){ei=ci;break;}}
+    if(ei<0)continue;
+    const emb=normEmb(cols[ei]);
+    const ini=parseFloat(cols[ei+1]),fin=parseFloat(cols[ei+2]);
+    if(isNaN(ini)||isNaN(fin))continue;
+    out.push({dk:dkey(d),emb,ini,fin});
+  }
+  return out;
+}
+
+function addData(){
+  const raw=document.getElementById('ta').value;
+  const sb=document.getElementById('sbar');sb.className='sbar';
+  if(!raw.trim()){sb.className='sbar err';sb.textContent='Pegar datos del Excel primero.';return;}
+  const rows=parseLines(raw);
+  if(!rows.length){sb.className='sbar err';sb.textContent='No se leyeron datos. Verificar columnas: Fecha inicial, Fecha final, Embalse, Nivel inicial, Nivel final.';return;}
+  const h=loadH();let added=0,upd=0;
+  for(const r of rows){
+    if(!h[r.emb])h[r.emb]=[];
+    const ex=h[r.emb].find(x=>x.dk===r.dk);
+    if(ex){ex.ini=r.ini;ex.fin=r.fin;upd++;}else{h[r.emb].push({dk:r.dk,ini:r.ini,fin:r.fin});added++;}
+  }
+  for(const e in h)h[e].sort((a,b)=>a.dk.localeCompare(b.dk));
+  saveH(h);
+  sb.className='sbar ok';
+  sb.textContent='✓ '+added+' nuevos'+(upd?', '+upd+' corregidos':'')+' · Guardado.';
+  document.getElementById('ta').value='';
+  renderTable(h);
+  if(document.getElementById('mgr').style.display!=='none')renderMgr();
+}
+
+function clearAll(){
+  if(!confirm('¿Borrar TODO el historial? Esta acción no se puede deshacer.'))return;
+  localStorage.removeItem(SK);
+  document.getElementById('tbl').innerHTML='';
+  document.getElementById('crow').style.display='none';
+  document.getElementById('hinfo').style.display='none';
+  document.getElementById('mgr').style.display='none';
+  const sb=document.getElementById('sbar');sb.className='sbar ok';sb.textContent='Historial borrado.';
+}
+
+function toggleMgr(){
+  const p=document.getElementById('mgr');
+  if(p.style.display==='none'||!p.style.display){p.style.display='block';renderMgr();}
+  else p.style.display='none';
+}
+
+function renderMgr(){
+  const hist=loadH();
+  const filter=document.getElementById('mgr-filter').value;
+  const all=[];
+  for(const e in hist){
+    if(filter&&e!==filter)continue;
+    for(const r of hist[e])all.push({emb:e,dk:r.dk,ini:r.ini,fin:r.fin});
+  }
+  all.sort((a,b)=>b.dk.localeCompare(a.dk)||a.emb.localeCompare(b.emb));
+  document.getElementById('mgr-count').textContent=all.length+' registros';
+  const tb=document.getElementById('mgr-body');
+  if(!all.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:#999;padding:8px;font-style:italic">Sin registros</td></tr>';return;}
+  tb.innerHTML=all.map(function(r){
+    return'<tr><td>'+dkFmt(r.dk)+'</td><td>'+ENAME[r.emb]+'</td><td class="r">'+r.ini.toFixed(3)+'</td><td class="r">'+r.fin.toFixed(3)+'</td>'
+      +'<td class="c"><button class="btn-del" onclick="delRow(\''+r.emb+'\',\''+r.dk+'\')" title="Borrar">✕</button></td></tr>';
+  }).join('');
+}
+
+function delRow(emb,dk){
+  if(!confirm('¿Borrar '+ENAME[emb]+' del '+dkFmt(dk)+'?'))return;
+  const hist=loadH();
+  if(hist[emb])hist[emb]=hist[emb].filter(function(r){return r.dk!==dk;});
+  saveH(hist);renderMgr();renderTable(hist);
+}
+
+// fin - ini: positivo = subió (verde), negativo = bajó (rojo)
+function fmtV(v){
+  if(v===null||v===undefined)return{t:'—',c:'zr'};
+  if(Math.abs(v)<0.005)return{t:'0.00 m',c:'zr'};
+  return{t:(v>=0?'+':'-')+Math.abs(v).toFixed(2)+' m',c:v>0?'up':'dn'};
+}
+
+const NC=10;
+const WC=[96,62,62,56,56,62,58,46,20,38];
+const WP=[72,58,58,50,50,58,54,42,14,34];
+
+function cg(){return'<colgroup>'+WC.map(w=>'<col style="width:'+w+'px">').join('')+'</colgroup>';}
+
+function renderTable(hist){
+  let maxDk=null;
+  for(const e in hist){if(hist[e].length){const ld=hist[e][hist[e].length-1].dk;if(!maxDk||ld>maxDk)maxDk=ld;}}
+  if(!maxDk){document.getElementById('tbl').innerHTML='';document.getElementById('crow').style.display='none';document.getElementById('hinfo').style.display='none';return;}
+  const LAST=new Date(maxDk+'T12:00:00');
+  const ds=fmtLong(LAST);
+  let tot=0;for(const e in hist)tot+=hist[e].length;
+  const hi=document.getElementById('hinfo');hi.style.display='inline-block';
+  hi.textContent='Historial: '+tot+' registros · último día: '+ds;
+
+  let h=cg();
+  h+='<tr class="tr-title"><td colspan="'+NC+'">Seguimiento de embalses de Centrales Hidroeléctricas '+ds+'</td></tr>';
+  h+='<tr class="tr-head">'
+    +'<th class="l">Embalse</th>'
+    +'<th>Nivel a las<br>00:00&nbsp;h<br>[m&nbsp;s.&nbsp;n.&nbsp;m.]</th>'
+    +'<th>Nivel a las<br>23:00&nbsp;h<br>[m&nbsp;s.&nbsp;n.&nbsp;m.]</th>'
+    +'<th>Variación<br>diaria</th>'
+    +'<th>Variación<br>semanal</th>'
+    +'<th>Variación<br>desde 4<br>semanas</th>'
+    +'<th>Margen sobre<br>cota mínima</th>'
+    +'<th>%&nbsp;Volumen<br>útil</th>'
+    +'<th colspan="2">Estado</th>'
+    +'</tr>';
+
+  EORD.forEach(function(e,i){
+    const rows=(hist[e]||[]);
+    const last=rows.length?rows[rows.length-1]:null;
+    const rc=i%2===0?'r0':'r1';
+    if(!last){h+='<tr class="'+rc+' tr-data"><td class="l" colspan="'+NC+'" style="color:#999;font-style:italic">Sin datos para '+ENAME[e]+'</td></tr>';return;}
+    const ini=last.ini,fin=last.fin;
+    const margen=(fin-CMIN[e]).toFixed(2)+' m';
+    const pct=pctVol(e,fin);
+    const sc=getSt(pct);
+    const vd=fmtV(fin-ini);   // fin - ini: positivo = subió
+    const r7=rows.find(function(r){return r.dk===dkey(dplus(LAST,-7));});
+    const r28=rows.find(function(r){return r.dk===dkey(dplus(LAST,-28));});
+    const vs=fmtV(r7!=null?fin-r7.fin:null);
+    const v4=fmtV(r28!=null?fin-r28.fin:null);
+    h+='<tr class="'+rc+' tr-data">'
+      +'<td class="l">'+ENAME[e]+'</td>'
+      +'<td>'+ini.toFixed(2)+'</td>'
+      +'<td>'+fin.toFixed(2)+'</td>'
+      +'<td class="'+vd.c+'">'+vd.t+'</td>'
+      +'<td class="'+vs.c+'">'+vs.t+'</td>'
+      +'<td class="'+v4.c+'">'+v4.t+'</td>'
+      +'<td>'+margen+'</td>'
+      +'<td>'+pct.toFixed(1)+'%</td>'
+      +'<td class="dc"><span style="font-size:13pt;color:'+ST[sc].c+';line-height:1">&#9679;</span></td>'
+      +'<td class="dt">'+ST[sc].t+'</td>'
+      +'</tr>';
+  });
+  h+='<tr class="tr-foot"><td colspan="'+NC+'">% vol. útil = (vol. actual – vol. en cota mínima) / (vol. en cota máxima – vol. en cota mínima), interpolado de curva cota-volumen aprobada. &nbsp; Estado: <span style="color:#C00000">&#9679;</span> Bajo &lt; 30% &nbsp;·&nbsp; <span style="color:#538135">&#9679;</span> Normal 30–60% &nbsp;·&nbsp; <span style="color:#2E75B6">&#9679;</span> Alto &gt; 60%. &nbsp; Fuente: base de datos técnica UT.</td></tr>';
+  document.getElementById('tbl').innerHTML=h;
+  document.getElementById('crow').style.display='flex';
+  window._H=hist;window._L=LAST;window._DS=ds;
+}
+
+function copyW(){
+  const hist=window._H,LAST=window._L,ds=window._DS;
+  if(!hist||!LAST)return;
+  const tot=WP.reduce(function(a,b){return a+b;},0);
+  function thS(w,al,sp){return'style="background:#1F3864;color:#fff;font-family:Arial,sans-serif;font-weight:bold;font-size:8.5pt;padding:4pt 5pt;border:1pt solid #4a6a9a;text-align:'+(al||'center')+';vertical-align:bottom;width:'+w+'pt"'+(sp?' colspan="'+sp+'"':'');}
+  let h='<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:9pt;width:'+tot+'pt;table-layout:fixed" width="'+tot+'">'
+    +'<colgroup>'+WP.map(function(w){return'<col width="'+w+'">';}).join('')+'</colgroup>'
+    +'<tr><td colspan="'+NC+'" style="background:#1F3864;color:#fff;font-family:Arial,sans-serif;font-weight:bold;font-size:10pt;padding:5pt 8pt;text-align:center;border:1pt solid #1F3864">Seguimiento de embalses de Centrales Hidroeléctricas '+ds+'</td></tr>'
+    +'<tr>'
+    +'<th '+thS(WP[0],'left')+'>Embalse</th>'
+    +'<th '+thS(WP[1])+'>Nivel a las 00:00 h [m s. n. m.]</th>'
+    +'<th '+thS(WP[2])+'>Nivel a las 23:00 h [m s. n. m.]</th>'
+    +'<th '+thS(WP[3])+'>Variación diaria</th>'
+    +'<th '+thS(WP[4])+'>Variación semanal</th>'
+    +'<th '+thS(WP[5])+'>Variación desde 4 semanas</th>'
+    +'<th '+thS(WP[6])+'>Margen sobre cota mínima</th>'
+    +'<th '+thS(WP[7])+'>% Volumen útil</th>'
+    +'<th '+thS(WP[8]+WP[9],'center',2)+'>Estado</th>'
+    +'</tr>';
+
+  EORD.forEach(function(e,i){
+    const rows=hist[e]||[];const last=rows.length?rows[rows.length-1]:null;
+    if(!last)return;
+    const ini=last.ini,fin=last.fin,bg=i%2===0?'#ffffff':'#f0f4f9';
+    const pct=pctVol(e,fin);const sc=getSt(pct);
+    const margen=(fin-CMIN[e]).toFixed(2)+' m';
+    function fv(v){if(v===null)return{t:'—',c:''};if(Math.abs(v)<0.005)return{t:'0.00 m',c:'#555555'};return{t:(v>=0?'+':'-')+Math.abs(v).toFixed(2)+' m',c:v>0?'#375623':'#C00000'};}
+    const r7=rows.find(function(r){return r.dk===dkey(dplus(LAST,-7));});
+    const r28=rows.find(function(r){return r.dk===dkey(dplus(LAST,-28));});
+    const vd=fv(fin-ini);    // fin - ini
+    const vs=fv(r7!=null?fin-r7.fin:null);
+    const v4=fv(r28!=null?fin-r28.fin:null);
+    function tdR(w,v,col){return'<td style="padding:3pt 5pt;border:1pt solid #bfc9d4;text-align:right;font-family:Arial,sans-serif;font-size:9pt;background:'+bg+';'+(col?'color:'+col+';':'')+'width:'+w+'pt">'+v+'</td>';}
+    h+='<tr>'
+      +'<td style="padding:3pt 5pt;border:1pt solid #bfc9d4;text-align:left;font-family:Arial,sans-serif;font-size:9pt;background:'+bg+';width:'+WP[0]+'pt">'+ENAME[e]+'</td>'
+      +tdR(WP[1],ini.toFixed(2))
+      +tdR(WP[2],fin.toFixed(2))
+      +tdR(WP[3],vd.t,vd.c)
+      +tdR(WP[4],vs.t,vs.c)
+      +tdR(WP[5],v4.t,v4.c)
+      +tdR(WP[6],margen)
+      +tdR(WP[7],pct.toFixed(1)+'%')
+      +'<td style="padding:3pt 3pt;border:1pt solid #bfc9d4;text-align:center;vertical-align:middle;background:'+bg+';width:'+WP[8]+'pt"><span style="font-size:13pt;color:'+ST[sc].c+'">&#9679;</span></td>'
+      +'<td style="padding:3pt 5pt 3pt 2pt;border:1pt solid #bfc9d4;text-align:left;vertical-align:middle;font-family:Arial,sans-serif;font-size:9pt;font-weight:bold;background:'+bg+';width:'+WP[9]+'pt">'+ST[sc].t+'</td>'
+      +'</tr>';
+  });
+  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:4pt 6pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="color:#C00000">&#9679;</span> Bajo &lt; 30% &#183; <span style="color:#538135">&#9679;</span> Normal 30&#8211;60% &#183; <span style="color:#2E75B6">&#9679;</span> Alto &gt; 60%. Fuente: base de datos técnica UT.</td></tr></table>';
+
+  try{
+    navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'})})]).then(function(){
+      const b=document.getElementById('bcopy');b.textContent='✓ Copiado';b.className='btn-copy cok';
+      setTimeout(function(){b.textContent='Copiar tabla para Word';b.className='btn-copy';},2200);
+    });
+  }catch(err){alert('Error al copiar. Usar Chrome o Edge.');}
+}
+
+const init=loadH();
+if(Object.keys(init).length)renderTable(init);
+</script>
