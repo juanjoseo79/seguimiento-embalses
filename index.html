@@ -1,5 +1,6 @@
 
 
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;font-size:12px;padding:10px;background:#fff;color:#111}
@@ -34,18 +35,20 @@ table.ht{width:100%;border-collapse:collapse;font-size:10px}
 .tbl-wrap{overflow-x:auto}
 table.mt{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;table-layout:fixed}
 .mt .tr-title td{background:#1F3864;color:#fff;font-weight:bold;font-size:10pt;padding:5px 8px;text-align:center;border:1px solid #1F3864}
-/* encabezados: Arial 8pt, alto 1.6cm ≈ 60px */
 .mt .tr-head{height:60px}
 .mt .tr-head th{background:#1F3864;color:#fff;font-weight:bold;font-family:Arial,sans-serif;font-size:8pt;padding:4px 5px;text-align:center;border:1px solid #4a6a9a;line-height:1.3;vertical-align:bottom;word-wrap:break-word;height:60px}
 .mt .tr-head th.l{text-align:left}
-/* datos: Arial 8.5pt, alto 0.55cm ≈ 21px */
 .mt .tr-data{height:21px}
-.mt .tr-data td{padding:2px 5px;border:1px solid #bfc9d4;text-align:right;vertical-align:middle;font-size:8.5pt;font-family:Arial,sans-serif}
-.mt .tr-data td.l{text-align:left}
+/* celdas numéricas: 9pt */
+.mt .tr-data td{padding:2px 5px;border:1px solid #bfc9d4;text-align:right;vertical-align:middle;font-size:9pt;font-family:Arial,sans-serif}
+/* nombre embalse: 8.5pt */
+.mt .tr-data td.l{text-align:left;font-size:8.5pt}
 .mt .tr-data td.dc{text-align:center;vertical-align:middle;padding:2px 2px}
+/* estado texto: 8pt */
 .mt .tr-data td.dt{text-align:left;vertical-align:middle;padding:2px 4px 2px 2px;font-size:8pt;font-family:Arial,sans-serif;font-weight:700}
 .mt .r0{background:#ffffff}.mt .r1{background:#f0f4f9}
-.mt .tr-foot td{font-family:'Cambria Math',Cambria,serif;font-style:italic;font-size:8.5pt;color:#444;padding:4px 7px;border:1px solid #bfc9d4;line-height:1.4}
+/* nota de pie: 9pt */
+.mt .tr-foot td{font-family:'Cambria Math',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:4px 7px;border:1px solid #bfc9d4;line-height:1.4}
 .up{color:#375623}.dn{color:#C00000}.zr{color:#555}
 .copy-row{margin-top:8px;display:flex;gap:10px;align-items:center}
 .btn-copy{background:#1F3864;color:#fff;border:none;border-radius:3px;padding:6px 14px;font-size:11px;font-weight:bold;cursor:pointer}
@@ -108,8 +111,8 @@ const CCV={
 const SK='emb_hist_v1';
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const ST={r:{c:'#C00000',t:'Bajo'},g:{c:'#538135',t:'Normal'},b:{c:'#2E75B6',t:'Alto'}};
-const H_DATA='15.59pt';   // 0.55 cm — filas de datos
-const H_HEAD='45.35pt';   // 1.60 cm — fila de encabezados
+const H_DATA='15.59pt';
+const H_HEAD='45.35pt';
 
 function interp(x,cv){
   if(x<=cv[0][0])return cv[0][1];if(x>=cv[cv.length-1][0])return cv[cv.length-1][1];
@@ -291,12 +294,13 @@ function copyW(){
   const hist=window._H,LAST=window._L,ds=window._DS;
   if(!hist||!LAST)return;
   const tot=WP.reduce(function(a,b){return a+b;},0);
-  // encabezados: 8pt, alto 1.6cm = 45.35pt
   function thS(w,al,sp){return'style="background:#1F3864;color:#fff;font-family:Arial,sans-serif;font-weight:bold;font-size:8pt;padding:3pt 4pt;border:1pt solid #4a6a9a;text-align:'+(al||'center')+';vertical-align:bottom;width:'+w+'pt;height:'+H_HEAD+';mso-height-rule:exactly"'+(sp?' colspan="'+sp+'"':'');}
-  // datos: 8.5pt, alto 0.55cm = 15.59pt
-  function tdS(w,al,bg,col){return'style="padding:2pt 4pt;border:1pt solid #bfc9d4;text-align:'+(al||'right')+';font-family:Arial,sans-serif;font-size:8.5pt;background:'+bg+';'+(col?'color:'+col+';':'')+'width:'+w+'pt;height:'+H_DATA+';mso-height-rule:exactly"';}
+  // embalse: 8.5pt
+  function tdL(w,bg,v){return'<td style="padding:2pt 4pt;border:1pt solid #bfc9d4;text-align:left;font-family:Arial,sans-serif;font-size:8.5pt;background:'+bg+';width:'+w+'pt;height:'+H_DATA+';mso-height-rule:exactly">'+v+'</td>';}
+  // numérico: 9pt
+  function tdN(w,bg,v,col){return'<td style="padding:2pt 4pt;border:1pt solid #bfc9d4;text-align:right;font-family:Arial,sans-serif;font-size:9pt;background:'+bg+';'+(col?'color:'+col+';':'')+'width:'+w+'pt;height:'+H_DATA+';mso-height-rule:exactly">'+v+'</td>';}
 
-  let h='<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:8.5pt;width:'+tot+'pt;table-layout:fixed" width="'+tot+'">'
+  let h='<table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:9pt;width:'+tot+'pt;table-layout:fixed" width="'+tot+'">'
     +'<colgroup>'+WP.map(function(w){return'<col width="'+w+'">';}).join('')+'</colgroup>'
     +'<tr><td colspan="'+NC+'" style="background:#1F3864;color:#fff;font-family:Arial,sans-serif;font-weight:bold;font-size:10pt;padding:5pt 8pt;text-align:center;border:1pt solid #1F3864">Seguimiento de embalses de Centrales Hidroeléctricas '+ds+'</td></tr>'
     +'<tr>'
@@ -322,19 +326,20 @@ function copyW(){
     const r28=rows.find(function(r){return r.dk===dkey(dplus(LAST,-28));});
     const vd=fv(fin-ini),vs=fv(r7!=null?fin-r7.fin:null),v4=fv(r28!=null?fin-r28.fin:null);
     h+='<tr>'
-      +'<td '+tdS(WP[0],'left',bg)+'>'+ENAME[e]+'</td>'
-      +'<td '+tdS(WP[1],'right',bg)+'>'+ini.toFixed(2)+'</td>'
-      +'<td '+tdS(WP[2],'right',bg)+'>'+fin.toFixed(2)+'</td>'
-      +'<td '+tdS(WP[3],'right',bg,vd.c)+'>'+vd.t+'</td>'
-      +'<td '+tdS(WP[4],'right',bg,vs.c)+'>'+vs.t+'</td>'
-      +'<td '+tdS(WP[5],'right',bg,v4.c)+'>'+v4.t+'</td>'
-      +'<td '+tdS(WP[6],'right',bg)+'>'+margen+'</td>'
-      +'<td '+tdS(WP[7],'right',bg)+'>'+pct.toFixed(1)+'%</td>'
+      +tdL(WP[0],bg,ENAME[e])
+      +tdN(WP[1],bg,ini.toFixed(2))
+      +tdN(WP[2],bg,fin.toFixed(2))
+      +tdN(WP[3],bg,vd.t,vd.c)
+      +tdN(WP[4],bg,vs.t,vs.c)
+      +tdN(WP[5],bg,v4.t,v4.c)
+      +tdN(WP[6],bg,margen)
+      +tdN(WP[7],bg,pct.toFixed(1)+'%')
       +'<td style="padding:2pt 2pt;border:1pt solid #bfc9d4;text-align:center;vertical-align:middle;background:'+bg+';width:'+WP[8]+'pt;height:'+H_DATA+';mso-height-rule:exactly"><span style="font-family:\'Segoe UI Emoji\',sans-serif;font-size:9pt;color:'+ST[sc].c+'">&#9679;</span></td>'
       +'<td style="padding:2pt 4pt 2pt 2pt;border:1pt solid #bfc9d4;text-align:left;vertical-align:middle;font-family:Arial,sans-serif;font-size:8pt;font-weight:bold;background:'+bg+';width:'+WP[9]+'pt;height:'+H_DATA+';mso-height-rule:exactly">'+ST[sc].t+'</td>'
       +'</tr>';
   });
-  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:8.5pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 30% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 30&#8211;60% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 60%. Fuente: base de datos técnica UT.</td></tr></table>';
+  // nota de pie: 9pt
+  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 30% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 30&#8211;60% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 60%. Fuente: base de datos técnica UT.</td></tr></table>';
 
   try{
     navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'})})]).then(function(){
