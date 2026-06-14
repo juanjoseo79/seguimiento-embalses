@@ -339,7 +339,7 @@ function copyW(){
       +'</tr>';
   });
   // nota de pie: 9pt
-  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 35% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 30&#8211;75% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 75%. Fuente: base de datos técnica UT.</td></tr></table>';
+  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 40% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 40&#8211;80% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 80%. Fuente: base de datos técnica UT.</td></tr></table>';
 
   try{
     navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'})})]).then(function(){
