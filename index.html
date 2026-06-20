@@ -119,7 +119,7 @@ function interp(x,cv){
   for(let i=0;i<cv.length-1;i++){if(x>=cv[i][0]&&x<=cv[i+1][0]){const t=(x-cv[i][0])/(cv[i+1][0]-cv[i][0]);return cv[i][1]+t*(cv[i+1][1]-cv[i][1]);}}
 }
 function pctVol(e,n){const cv=CCV[e];return(interp(n,cv)-interp(CMIN[e],cv))/(interp(CMAX[e],cv)-interp(CMIN[e],cv))*100;}
-function getSt(p){return p<40?'r':p<80?'g':'b';}
+function getSt(p){return p<35?'r':p<75?'g':'b';}
 function normEmb(s){
   s=String(s).toLowerCase().replace(/[-_\s]/g,'').trim();
   if(s.includes('guaj'))return'guaj';if(s.includes('cgra'))return'cgra';
@@ -284,7 +284,7 @@ function renderTable(hist){
       +'<td class="dt">'+ST[sc].t+'</td>'
       +'</tr>';
   });
-  h+='<tr class="tr-foot"><td colspan="'+NC+'">% vol. útil = (vol. actual – vol. en cota mínima) / (vol. en cota máxima – vol. en cota mínima), interpolado de curva cota-volumen aprobada. &nbsp; Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 40% &nbsp;·&nbsp; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 40–80% &nbsp;·&nbsp; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 80%. &nbsp; Fuente: base de datos técnica UT.</td></tr>';
+  h+='<tr class="tr-foot"><td colspan="'+NC+'">% vol. útil = (vol. actual – vol. en cota mínima) / (vol. en cota máxima – vol. en cota mínima), interpolado de curva cota-volumen aprobada. &nbsp; Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 35% &nbsp;·&nbsp; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 35–75% &nbsp;·&nbsp; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 75%. &nbsp; Fuente: base de datos técnica UT.</td></tr>';
   document.getElementById('tbl').innerHTML=h;
   document.getElementById('crow').style.display='flex';
   window._H=hist;window._L=LAST;window._DS=ds;
@@ -339,7 +339,7 @@ function copyW(){
       +'</tr>';
   });
   // nota de pie: 9pt
-  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 40% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 40&#8211;80% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 80%. Fuente: base de datos técnica UT.</td></tr></table>';
+  h+='<tr><td colspan="'+NC+'" style="font-family:\'Cambria Math\',Cambria,serif;font-style:italic;font-size:9pt;color:#444;padding:3pt 5pt;border:1pt solid #bfc9d4;line-height:1.4">% vol. útil = (vol. actual &#8211; vol. en cota mínima) / (vol. en cota máxima &#8211; vol. en cota mínima), interpolado de curva cota-volumen aprobada. Estado: <span style="font-family:\'Segoe UI Emoji\';color:#C00000">&#9679;</span> Bajo &lt; 35% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#538135">&#9679;</span> Normal 35&#8211;75% &#183; <span style="font-family:\'Segoe UI Emoji\';color:#2E75B6">&#9679;</span> Alto &gt; 75%. Fuente: base de datos técnica UT.</td></tr></table>';
 
   try{
     navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'})})]).then(function(){
